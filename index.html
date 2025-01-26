@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Keeper</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input, textarea, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .memory {
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .memory h3 {
+      margin: 0 0 10px;
+    }
+    .memory small {
+      color: #666;
+    }
+    footer {
+      margin-top: 50px;
+      padding: 20px;
+      background: #333;
+      color: white;
+      text-align: center;
+    }
+    footer a {
+      color: #00aaff;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Memory Keeper</h1>
+    <form id="memoryForm">
+      <input type="text" id="topic" placeholder="Enter memory topic" required />
+      <textarea id="details" placeholder="Enter memory details" required></textarea>
+      <button type="submit">Save Memory</button>
+    </form>
+    <div id="memories"></div>
+  </div>
+
+  <footer>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms and Conditions</a>
+  </footer>
+
+  <script>
+    // Function to save memory to local storage
+    function saveMemory(topic, details) {
+      const memories = JSON.parse(localStorage.getItem('memories')) || [];
+      const newMemory = { topic, details, date: new Date().toLocaleString() };
+      memories.push(newMemory);
+      localStorage.setItem('memories', JSON.stringify(memories));
+    }
+
+    // Function to load memories from local storage
+    function loadMemories() {
+      const memories = JSON.parse(localStorage.getItem('memories')) || [];
+      const memoryContainer = document.getElementById('memories');
+      memoryContainer.innerHTML = '';
+      memories.forEach(memory => {
+        const memoryDiv = document.createElement('div');
+        memoryDiv.className = 'memory';
+        memoryDiv.innerHTML = `
+          <h3>${memory.topic}</h3>
+          <small>${memory.date}</small>
+          <p>${memory.details}</p>
+        `;
+        memoryContainer.appendChild(memoryDiv);
+      });
+    }
+
+    // Handle form submission
+    document.getElementById('memoryForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const topic = document.getElementById('topic').value;
+      const details = document.getElementById('details').value;
+
+      if (topic && details) {
+        saveMemory(topic, details);
+        loadMemories();
+
+        // Clear form
+        document.getElementById('topic').value = '';
+        document.getElementById('details').value = '';
+      }
+    });
+
+    // Load memories on page load
+    loadMemories();
+  </script>
+</body>
+</html>
